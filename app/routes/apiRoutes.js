@@ -1,62 +1,59 @@
-const mongojs = require('mongojs')
+// Dependencies
+const mongoose = require('mongoose')
 const axios = require('axios')
 const cheerio = require('cheerio')
 
 
-// Database configuration
-const databaseUrl = 'scraper'
-const collections = ['scrapedData']
+// Database setup
+const db = require('../models')
+// Connect to the Mongo DB
+mongoose.connect('mongodb://localhost/nprScraper', { useNewUrlParser: true })
 
 
-// Hook mongojs configuration to the db constiable
-const db = mongojs(databaseUrl, collections)
-db.on('error', function (error) {
-    console.log(`Database Error: ${error}`)
-})
+module.exports = function (app) {
 
 
-app.get('/all', function (req, res) {
-    db.scrapedData.find({}, function (err, found) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            res.json(found)
-        }
+    app.get('/api/articles', function (req, res) {
+        db.Article.find({})
+            .then(function (dbArticle) {
+                res.json(dbArticle)
+            })
+            .catch(function (err) {
+                res.json(err)
+            })
     })
-})
 
 
-app.get('/scrape', function (req, res) {
+    app.get('/api/scrape', function (req, res) {
 
-    axios.get('https://www.npr.org/sections/business/').then(function (response) {
 
-        const $ = cheerio.load(response.data)
+        axios.get('https://www.npr.org/sections/business/').then(function (response) {
 
-        $('article.item').each(function (i, element) {
 
-            const title = $(element).find('h2.title').text()
-            const link = $(element).find('a').attr('href')
-            const image = $(element).find('img').attr('src')
-            const summary = $(element).find('p.teaser').text()
+            const $ = cheerio.load(response.data)
 
-            if (title && link && image && summary) {
-                db.scrapedData.insert({
-                    title: title,
-                    link: link,
-                    image: image,
-                    summary: summary
-                }, function (err, inserted) {
-                    if (err) {
-                        console.log(err)
-                    }
-                    else {
-                        console.log(inserted)
-                    }
 
-                })
-            }
+            $('article.item').each(function (i, element) {
+
+
+                let result = {}
+
+
+                result.title = $(this).find('h2.title').text()
+                result.link = $(this).find('a').attr('href')
+                result.image = $(this).find('img').attr('src')
+                result.summary = $(this).find('p.teaser').text()
+
+
+                db.Article.create(result)
+                    .then(function (dbArticle) {
+                        console.log(dbArticle)
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            })
         })
+        res.send('Website scraped!')
     })
-    res.send('Scraped')
-})
+}
