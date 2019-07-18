@@ -1,7 +1,7 @@
 // Dependencies
 const express = require('express')
 const exphbs = require('express-handlebars')
-// const logger = require('morgan')
+const logger = require('morgan')
 const path = require('path')
 
 
@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000
 const app = express()
 
 
-// app.use(logger('dev'))
+app.use(logger('dev'))
 
 
 // For Express
