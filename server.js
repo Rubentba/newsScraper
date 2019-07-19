@@ -18,6 +18,7 @@ const MONGODB_URI = process.env.MONGOD_URI || "mongod://localhost/mongoHeadlines
 mongoose.connect(MONGODB_URI)
 
 
+// For Morgan
 app.use(logger('dev'))
 
 
