@@ -10,6 +10,14 @@ const PORT = process.env.PORT || 3000
 const app = express()
 
 
+// For mongoHeadlines
+const MONGODB_URI = process.env.MONGOD_URI || "mongod://localhost/mongoHeadlines"
+
+
+// Connect to the Mongo DB
+mongoose.connect(MONGODB_URI)
+
+
 app.use(logger('dev'))
 
 
