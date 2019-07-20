@@ -1,13 +1,10 @@
 // Dependencies
-const mongoose = require('mongoose')
 const axios = require('axios')
 const cheerio = require('cheerio')
 
 
-// Database setup
+// Database Schema setup
 const db = require('../models')
-// Connect to the Mongo DB
-mongoose.connect('mongodb://localhost/nprScraper', { useNewUrlParser: true })
 
 
 module.exports = function (app) {

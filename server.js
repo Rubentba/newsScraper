@@ -1,22 +1,14 @@
 // Dependencies
 const express = require('express')
 const exphbs = require('express-handlebars')
+const mongoose = require('mongoose')
 const logger = require('morgan')
 const path = require('path')
-const mongoose = require('mongoose')
 
 
 // For Heroku
 const PORT = process.env.PORT || 3000
 const app = express()
-
-
-// For mongoHeadlines
-const MONGODB_URI = process.env.MONGOD_URI || "mongod://localhost/mongoHeadlines"
-
-
-// Connect to the Mongo DB
-mongoose.connect(MONGODB_URI)
 
 
 // For Morgan
@@ -41,6 +33,14 @@ app.set("views", path.join(__dirname, "app/views"))
 // Routes
 require('./app/routes/htmlRoutes')(app)
 require('./app/routes/apiRoutes')(app)
+
+
+// DB URL
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
+
+
+// Connect to the Mongo DB
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
 
 
 // Making sure the server is live.
