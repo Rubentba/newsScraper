@@ -18,7 +18,7 @@ app.use(logger('dev'))
 // For Express
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(express.static('public'))
+app.use(express.static('app/public'))
 
 
 // For Handlebars
